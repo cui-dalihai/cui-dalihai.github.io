@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="en" itemscope itemtype="http://schema.org/WebPage">
+<html lang="zh-cn" itemscope itemtype="http://schema.org/WebPage">
 <head>
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <title>Go的内存模型 - 常在险远</title>
+  <title>Go的内存模型 - HaveFun</title>
   
 
 <meta name="renderer" content="webkit" />
@@ -22,7 +22,7 @@
 
 <meta name="mobile-web-app-capable" content="yes">
 
-
+<meta name="author" content="Neo" />
   <meta name="description" content="主要是为了解释什么情况下一个goroutine写的变量值能被另一个goroutine可靠观察到
 " />
 
@@ -69,7 +69,7 @@
 <meta itemprop="description" content="主要是为了解释什么情况下一个goroutine写的变量值能被另一个goroutine可靠观察到">
 <meta itemprop="datePublished" content="2020-05-26T19:14:09&#43;08:00" />
 <meta itemprop="dateModified" content="2020-05-26T19:14:09&#43;08:00" />
-<meta itemprop="wordCount" content="649">
+<meta itemprop="wordCount" content="3752">
 
 
 
@@ -93,7 +93,7 @@
 <body>
   <div id="mobile-navbar" class="mobile-navbar">
   <div class="mobile-header-logo">
-    <a href="/" class="logo">常在险远</a>
+    <a href="/" class="logo">HaveFun</a>
   </div>
   <div class="mobile-navbar-icon">
     <span></span>
@@ -103,7 +103,35 @@
 </div>
 <nav id="mobile-menu" class="mobile-menu slideout-menu">
   <ul class="mobile-menu-list">
-    
+    <li class="mobile-menu-item">
+        
+          
+          
+            <a class="menu-item-link" href="https://cui-dalihai.github.io/">主页</a>
+          
+        
+      </li><li class="mobile-menu-item">
+        
+          
+          
+            <a class="menu-item-link" href="https://cui-dalihai.github.io/post/">归档</a>
+          
+        
+      </li><li class="mobile-menu-item">
+        
+          
+          
+            <a class="menu-item-link" href="https://cui-dalihai.github.io/tags/">标签</a>
+          
+        
+      </li><li class="mobile-menu-item">
+        
+          
+          
+            <a class="menu-item-link" href="https://cui-dalihai.github.io/categories/">类别</a>
+          
+        
+      </li>
     
 
     
@@ -121,7 +149,7 @@
     <div class="logo-wrapper">
   <a href="/" class="logo">
     
-      常在险远
+      HaveFun
     
   </a>
 </div>
@@ -129,6 +157,50 @@
 <nav class="site-navbar">
   <ul id="menu" class="menu">
     
+    
+        <li class="menu-item">
+        
+          
+          
+            <a class="menu-item-link" href="https://cui-dalihai.github.io/">主页</a>
+          
+
+        
+
+      </li>
+    
+        <li class="menu-item">
+        
+          
+          
+            <a class="menu-item-link" href="https://cui-dalihai.github.io/post/">归档</a>
+          
+
+        
+
+      </li>
+    
+        <li class="menu-item">
+        
+          
+          
+            <a class="menu-item-link" href="https://cui-dalihai.github.io/tags/">标签</a>
+          
+
+        
+
+      </li>
+    
+        <li class="menu-item">
+        
+          
+          
+            <a class="menu-item-link" href="https://cui-dalihai.github.io/categories/">类别</a>
+          
+
+        
+
+      </li>
     
 
     
@@ -195,31 +267,71 @@
 <li>而main包中main函数是可靠发生在所有init函数之后的</li>
 <li>goroutine创建时的go声明可靠发生在这个goroutine开始执行之前</li>
 </ol>
-<pre><code>var a string
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span><span class="lnt">8
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">var a string
 func f() {
         print(a)
 }
 func hello() {
-        a = &quot;hello, world&quot;   # a是被先赋值, go f()后执行, 所以print(a)一定会打印&quot;hello,world&quot;
+        a = &#34;hello, world&#34;   # a是被先赋值, go f()后执行, 所以print(a)一定会打印&#34;hello,world&#34;
         go f()
 }
-</code></pre><ol start="4">
+</code></pre></td></tr></table>
+</div>
+</div><ol start="4">
 <li>不实用同步机制的话, 无法可靠保证goroutine的退出相对于程序中任何事件的先或者后</li>
 </ol>
-<pre><code>var a string
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">var a string
 func hello() {
-        go func() { a = &quot;hello&quot; }()
+        go func() { a = &#34;hello&#34; }()
         print(a)   # 这可以打印空字符串, 也可以打印hello, 甚至一些激进的编译器直接删除前面的go
 }
-</code></pre><p><strong>通道通讯中的happens before:</strong></p>
+</code></pre></td></tr></table>
+</div>
+</div><p><strong>通道通讯中的happens before:</strong></p>
 <p>通道通讯是主要的goroutine之间的同步机制, 每个通道有对应的发送方和接收方, 通常发送和接收会在不同的goroutine</p>
 <ol start="5">
 <li>一次发送可靠发生在对应这次发送的接收完成之前</li>
 </ol>
-<pre><code>var c = make(chan int, 10)
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">var c = make(chan int, 10)
 var a string
 func f() {
-        a = &quot;hello, world&quot;
+        a = &#34;hello, world&#34;
         c &lt;- 0
 }
 func main() {
@@ -227,14 +339,31 @@ func main() {
         &lt;-c
         print(a)  # 这个一定可靠打印hello, world, 因为main中&lt;-c接收完成之前,c&lt;-0一定可靠发生, 那么对a的写一定也可靠发生 
 }
-</code></pre><ol start="6">
+</code></pre></td></tr></table>
+</div>
+</div><ol start="6">
 <li>通道关闭可靠发生在接受方收到通道类型的零值之前, 上面c&lt;-0改为close(c)是相同的效果</li>
 <li>对于无缓冲通道的接收是可靠发生在发送完成之前</li>
 </ol>
-<pre><code>var c = make(chan int)
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">var c = make(chan int)
 var a string
 func f() {
-        a = &quot;hello, world&quot;
+        a = &#34;hello, world&#34;
         &lt;-c
 }
 func main() {
@@ -242,7 +371,9 @@ func main() {
         c &lt;- 0
         print(a)  # c的发送发生在print之前, 
 }
-</code></pre><ol start="8">
+</code></pre></td></tr></table>
+</div>
+</div><ol start="8">
 <li>第k次对容量为C的缓冲通道的接收是可靠发生在第k+C次的发送完成之前</li>
 </ol>
 <p>注: 这个位置需要对比5, 7, 8理解一下,
@@ -266,7 +397,21 @@ func main() {
 <!-- raw HTML omitted -->
 <p>ok, 接着读这篇内存模型的文档</p>
 <p>通过第八条结论, 可以用缓冲通道来模拟计数型的同步机制: 缓冲数代表最大允许的活跃同步量的数量, 达到数量之后, 如果还想使用同步量就要等待其它活跃的同步量被释放, 常用来限制并发, 上代码：</p>
-<pre><code>var limit = make(chan int, 3)
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">var limit = make(chan int, 3)
 func main() {
     for _, w := range work {    # 虽然for为每个work创建了一个goroutine, 但这些goroutine并不是同时活跃的   
         go func(w func()) {  
@@ -276,14 +421,32 @@ func main() {
         }(w)
     }
 }
-</code></pre><p><strong>锁中的happens before:</strong></p>
+</code></pre></td></tr></table>
+</div>
+</div><p><strong>锁中的happens before:</strong></p>
 <ol start="9">
 <li>对于sync.Mutex或者sync.RWMutex类型变量l(小写L), n, m其中n&lt;m, n次对l.Unlock()可靠发生在m次的l.Lock()之前</li>
 </ol>
-<pre><code>var l sync.Mutex
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">var l sync.Mutex
 var a string
 func f() {
-    a = &quot;hello&quot;
+    a = &#34;hello&#34;
     l.Unlock()   # n = 1
 }
 func main() {
@@ -292,7 +455,9 @@ func main() {
     l.lock()  # m = 2 上面n=1可靠发生在m=2之前, 所以对a的写发生在m=2之前, m=2发生在print之前, 所以对a的写发生在print之前, 可靠打印hello
     print(a)
 }
-</code></pre><ol start="10">
+</code></pre></td></tr></table>
+</div>
+</div><ol start="10">
 <li>For any call to l.RLock on a sync.RWMutex variable l, there is an n such that the l.RLock happens (returns) after call n to l.Unlock and the matching l.RUnlock happens before call n+1 to l.Lock.这句意思是下图</li>
 </ol>
 <!-- raw HTML omitted -->
@@ -300,10 +465,27 @@ func main() {
 <ol start="11">
 <li>Once提供了并发场景下的初始化方案, 多个goroutine调用once.Do(f), 仅会有一个真正执行了f( ), 其它的goroutine会阻塞等待执行的那个返回, 即其中一个真正执行的那个goroutine执行f( )会发生在任何一once.Do(f)返回之前</li>
 </ol>
-<pre><code>var a string
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">var a string
 var once sync.Once
 func setup() {
-    a = &quot;hello&quot;
+    a = &#34;hello&#34;
 }
 func doprint() {
     once.Do(setup)
@@ -313,8 +495,27 @@ func twoprint() {
     go doprint()     # 这两个goroutine中仅有一个真正执行了setup()，但是两个都会阻塞到setup()被执行完成
     go doprint()     # 所以a写入发生在once.Do(setup)之前，print(a)会可靠打印两遍hello
 }
-</code></pre><p><strong>不正确的同步:</strong></p>
-<pre><code>var a, b int
+</code></pre></td></tr></table>
+</div>
+</div><p><strong>不正确的同步:</strong></p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">var a, b int
 func f() {
     a = 1
     b = 2
@@ -327,11 +528,34 @@ func main() {
     go f()
     g()    # 这个位置几乎可print任何组合, 0-0, 0-1, 2-0, 1-2, 因为f的goroutine和主goroutine没有任何同步，
 }
-</code></pre><pre><code>var a string
+</code></pre></td></tr></table>
+</div>
+</div><div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">var a string
 var done bool
 
 func setup() {
-    a = &quot;hello&quot;
+    a = &#34;hello&#34;
     done = true
 }
 func doprint() {
@@ -344,11 +568,29 @@ func twoprint() {
     go doprint()    # 可能两个goroutine都会阻塞在once.Do(setup)位置, 其中一个真正执行了setup, 而另一个不会执行, 这个为执行的goroutine
     go doprint()    # 就无法可靠观察到那个执行setup的goroutine对a的写, 所以会有一个空字符串
 }
-</code></pre><pre><code>var a string
+</code></pre></td></tr></table>
+</div>
+</div><div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">var a string
 var done bool
 
 func setup() {
-    a = &quot;hello&quot;
+    a = &#34;hello&#34;
     done = true
 }
 func main() {
@@ -356,13 +598,33 @@ func main() {
     for !done {}    # 这个也是在暗示读到done就能读到a,同样这个done可能被main goroutine读到, 但不一定表示就能读到a, 还有就是这个done
     print(a)        # 也有可能永远不会被main读到,
 }
-</code></pre><pre><code>type T struct {
+</code></pre></td></tr></table>
+</div>
+</div><div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">type T struct {
     msg string
 }
 var g *T
 func setup() {
     t := new(T)
-    t.msg = &quot;hello&quot;
+    t.msg = &#34;hello&#34;
     g = t
 }
 func main() {
@@ -370,7 +632,9 @@ func main() {
     for g == nil {}    # main gorotine和setup gorotine共享了g, 所以main可以观察到g, 但是对g.msg的写无法可靠保证。
     print(g.msg)
 }
-</code></pre><p>只要显式使用同步原语就可以解决上面的问题</p>
+</code></pre></td></tr></table>
+</div>
+</div><p>只要显式使用同步原语就可以解决上面的问题</p>
     </div>
 
     
@@ -397,7 +661,7 @@ func main() {
 
             </i>
             <span class="prev-text nav-default">An Example Post</span>
-            <span class="prev-text nav-mobile"></span>
+            <span class="prev-text nav-mobile">上一篇</span>
           </a>
         
       </nav>
@@ -471,7 +735,10 @@ func main() {
 </svg>
 
       </i>
-    </span></span>
+    </span><span class="author">
+        Neo
+        
+      </span></span>
 
   
   

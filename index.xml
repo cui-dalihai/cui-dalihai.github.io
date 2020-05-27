@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>常在险远</title>
+    <title>HaveFun</title>
     <link>https://cui-dalihai.github.io/</link>
-    <description>Recent content on 常在险远</description>
+    <description>Recent content on HaveFun</description>
     <generator>Hugo -- gohugo.io</generator>
+    <language>zh-cn</language>
     <lastBuildDate>Tue, 26 May 2020 19:14:09 +0800</lastBuildDate>
     
         <atom:link href="https://cui-dalihai.github.io/index.xml" rel="self" type="application/rss+xml" />
@@ -17,8 +18,7 @@
       
       <guid>https://cui-dalihai.github.io/post/sp/</guid>
       
-        <description>Hello Hugo 这里应该说些话把
- aaa bbb ccc  </description>
+        <description>Hello Hugo 这里应该说些话把 aaa bbb ccc</description>
       
     </item>
     
